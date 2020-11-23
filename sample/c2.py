@@ -1,7 +1,6 @@
 from caffe2.python import brew, workspace
 from caffe2.python.model_helper import ModelHelper
 import numpy as np
-import pdb; pdb.set_trace()
 
 workspace.FeedBlob('input', np.random.randn(2, 16).astype(np.float32))
 workspace.FeedBlob('label', np.array([0, 1]).astype(np.float32))
@@ -16,10 +15,14 @@ xent = helper.SigmoidCrossEntropyWithLogits([pred_sq, 'label'], 'xent')
 loss = helper.AveragedLoss(xent, 'loss')
 helper.AddGradientOperators([loss])
 
+ONE = helper.param_init_net.ConstantFill([], "ONE", shape=[1], value=1.0)
+LR = helper.param_init_net.ConstantFill([], "LR", shape=[1], value=-0.03)
+
+for param in helper.params:
+    param_grad = helper.param_to_grad[param]
+    helper.WeightedSum([param, ONE, param_grad, LR], param)
+
 workspace.RunNetOnce(helper.param_init_net)
 workspace.RunNetOnce(helper.net)
 
-# for param in model.params:
-#     param_grad = model.param_to_grad[param]
-#     model.WeightedSum([param, ONE, param_grad, LR], param)
 import pdb; pdb.set_trace()
