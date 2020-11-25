@@ -40,8 +40,8 @@ class Net:
         return net
 
 def run_net(net):
-    print(net.get_proto())
-    assert False
+    from tmlf.python import tmlf_pybind
+    tmlf_pybind.run_net(net.get_proto().SerializeToString())
 
 class Model:
     def __init__(self):

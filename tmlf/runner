@@ -1,5 +1,7 @@
 protoc tmlf/proto/tmlf.proto --python_out=./tmlf/gen
 
-# export PYTHONPATH=$PYTHONPATH:/Users/shunting/Documents/tmlf/gen
+g++ -O2 -shared -fPIC -std=c++11 `python3.6 -m pybind11 --includes` tmlf/python/tmlf_pybind.cc -o tmlf/python/tmlf_pybind`python3.6-config --extension-suffix` -Wl,-undefined,dynamic_lookup
+
 export PYTHONPATH=/Users/shunting/Documents/tmlf/gen:$PATHONPATH
 python3.6 tmlf/sample/trivial.py
+
