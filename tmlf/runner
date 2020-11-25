@@ -1,0 +1,5 @@
+protoc tmlf/proto/tmlf.proto --python_out=./tmlf/gen
+
+# export PYTHONPATH=$PYTHONPATH:/Users/shunting/Documents/tmlf/gen
+export PYTHONPATH=/Users/shunting/Documents/tmlf/gen:$PATHONPATH
+python3.6 tmlf/sample/trivial.py
