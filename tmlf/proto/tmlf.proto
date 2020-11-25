@@ -1,5 +1,7 @@
 syntax = "proto2";
 
+package tmlf.proto;
+
 message Arg {
   required string key = 1;
   required string value = 2;

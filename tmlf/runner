@@ -1,9 +1,21 @@
-protoc tmlf/proto/tmlf.proto --python_out=./tmlf/gen
+set -e
 
-LD_FLAGS="-lglog"
+ORIG_DIR=`pwd`
+
+protoc tmlf/proto/tmlf.proto --python_out=./tmlf/gen --cpp_out=./tmlf/gen
+
+cd tmlf/proto/ || (echo fail to cd && exit 1)
+ln -svf $ORIG_DIR/tmlf/gen/tmlf/proto/tmlf_pb2.py tmlf_pb2.py
+ln -svf $ORIG_DIR/tmlf/gen/tmlf/proto/tmlf.pb.h tmlf.pb.h
+ln -svf $ORIG_DIR/tmlf/gen/tmlf/proto/tmlf.pb.cc tmlf.pb.cc
+cd $ORIG_DIR
+
+LD_FLAGS="-lglog -lprotobuf"
+CFLAGS="-I."
+CSRC="tmlf/proto/tmlf.pb.cc tmlf/core/Net.cc tmlf/core/Operator.cc tmlf/ops/xavier_fill_op.cc tmlf/ops/constant_fill_op.cc"
 
 # EXTRA_LD_FLAGS="-Wl,-undefined,dynamic_lookup"
-g++ -O2 -shared -fPIC -std=c++11 `python3.6 -m pybind11 --includes` tmlf/python/tmlf_pybind.cc -o tmlf/python/tmlf_pybind`python3.6-config --extension-suffix` $LD_FLAGS `python3.6-config --ldflags` $EXTRA_LD_FLAGS
+g++ -O2 -shared -fPIC -std=c++14 $CFLAGS `python3.6 -m pybind11 --includes` tmlf/python/tmlf_pybind.cc $CSRC -o tmlf/python/tmlf_pybind`python3.6-config --extension-suffix` $LD_FLAGS `python3.6-config --ldflags` $EXTRA_LD_FLAGS
 
 export PYTHONPATH=/Users/shunting/Documents/tmlf/gen:$PATHONPATH
 python3.6 tmlf/sample/trivial.py

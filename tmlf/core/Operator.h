@@ -1,0 +1,52 @@
+#pragma once
+
+#include <memory>
+#include "tmlf/proto/tmlf.pb.h"
+#include <glog/logging.h>
+
+namespace tmlf {
+
+class Operator;
+
+class OperatorRegistry {
+ public:
+  typedef std::unique_ptr<Operator> (*OperatorCreator)(const proto::Op& op_proto);
+  static OperatorRegistry& get() {
+    static OperatorRegistry registry;
+    return registry;
+  }
+  std::unique_ptr<Operator> create_operator(const proto::Op& op_proto);
+ private:
+  OperatorRegistry() {}
+  std::unordered_map<std::string, OperatorCreator> str_to_creator_;
+  friend class OperatorRegisterer;
+};
+
+class OperatorRegisterer {
+ public:
+  explicit OperatorRegisterer(const std::string& name, OperatorRegistry::OperatorCreator creator) {
+    auto& registry = OperatorRegistry::get();
+    if (registry.str_to_creator_.count(name) > 0) {
+      LOG(FATAL) << "Operator " << name << " already registered";
+    }
+    registry.str_to_creator_.emplace(name, creator);
+  }
+};
+
+class Operator {
+ public:
+  explicit Operator(const proto::Op& op_proto) : op_proto_(op_proto) { }
+  virtual ~Operator() {}
+  virtual void run() = 0;
+ private:
+  proto::Op op_proto_;
+};
+
+std::unique_ptr<Operator> create_operator(const proto::Op& op_proto);
+
+#define REGISTER_OPERATOR(op_type, op_class) \
+  static auto reg ## op_type = OperatorRegisterer(#op_type, [](const proto::Op& op_proto) -> std::unique_ptr<Operator> { \
+    return std::make_unique<op_class>(op_proto); \
+  })
+
+}
