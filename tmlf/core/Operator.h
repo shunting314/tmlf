@@ -49,6 +49,8 @@ class Operator {
   std::string getarg(const std::string& name, const std::string& def);
   const std::string& in(int i) const { return op_proto_.in_tensors()[i]; }
   const std::string& out(int i) const { return op_proto_.out_tensors()[i]; }
+  size_t num_in() const { return op_proto_.in_tensors().size(); }
+  size_t num_out() const { return op_proto_.out_tensors().size(); }
  protected:
   proto::Op op_proto_;
   Workspace* ws_;

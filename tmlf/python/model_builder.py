@@ -51,13 +51,23 @@ class Model:
     def __init__(self):
         self.init_net = Net()
         self.net = Net()
+        self.params = []
 
     def fc(self, in_tensors, out_tensors, in_dim, out_dim):
         w = self.init_net.next_name("w")
         b = self.init_net.next_name("b")
+        self.params.extend([w, b])
         self.init_net.xavier_fill([], w, shape=[in_dim, out_dim])
         self.init_net.constant_fill([], b, shape=[out_dim])
         self.net.fc([in_tensors, w, b], out_tensors)
+
+    def get_param_to_grad_map(self):
+        # make sure the backward ops has been added
+        assert(len(self.net.tensor_to_grad_map) > 0)
+        param_to_grad_map = {}
+        for param in self.params:
+            param_to_grad_map[param] = self.net.tensor_to_grad_map[param]
+        return param_to_grad_map
 
     def __getattr__(self, name):
         return getattr(self.net, name)

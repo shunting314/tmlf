@@ -8,7 +8,11 @@ Workspace* Workspace::get_ptr() {
 }
 
 void Workspace::add_tensor(const std::string& name, Tensor tensor) {
-  str2tensor_.emplace(name, tensor);
+  auto ret = str2tensor_.emplace(name, tensor);
+  // already exist
+  if (!ret.second) {
+    ret.first->second = tensor;
+  }
 }
 
 Tensor Workspace::get_tensor(const std::string& name) {
