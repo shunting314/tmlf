@@ -20,6 +20,8 @@ RULE_LIST = {
     ),
     "cross_entropy": Rule(
         "cross_entropy_grad",
+        ["i0", "i1", "go0"],
+        ["gi0"],
     ),
     "averaged_loss": Rule(
         "averaged_loss_grad",
