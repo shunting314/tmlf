@@ -24,6 +24,19 @@ REGISTER_OPERATOR(fc, FCOp);
 class FCGradOp : public Operator {
  public:
   using Operator::Operator;
+  void run() override {
+    auto feat = ws_->get_tensor(in(0)).mat();
+    auto w = ws_->get_tensor(in(1)).mat();
+    auto gfc = ws_->get_tensor(in(2)).mat();
+
+    auto gfeat_mat = gfc * w.transpose();
+    auto gw = feat.transpose() * gfc;
+    auto gb = gfc.transpose().rowwise().sum();
+
+    ws_->add_tensor(out(0), Tensor(gfeat_mat));
+    ws_->add_tensor(out(1), Tensor(gw));
+    ws_->add_tensor(out(2), Tensor(gb));
+  }
 };
 
 REGISTER_OPERATOR(fc_grad, FCGradOp);
