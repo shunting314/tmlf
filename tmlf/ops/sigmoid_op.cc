@@ -15,3 +15,10 @@ class SigmoidOp : public Operator {
 };
 
 REGISTER_OPERATOR(sigmoid, SigmoidOp);
+
+class SigmoidGradOp : public Operator {
+ public:
+  using Operator::Operator;
+};
+
+REGISTER_OPERATOR(sigmoid_grad, SigmoidGradOp);

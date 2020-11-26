@@ -41,7 +41,9 @@ class Operator {
     ws_ = Workspace::get_ptr();
   }
   virtual ~Operator() {}
-  virtual void run() = 0;
+  virtual void run() {
+    LOG(FATAL) << "Subclass of Operator should override run()";
+  }
   std::string getarg(const std::string& name);
   std::string getarg(const std::string& name, const std::string& def);
   const std::string& in(int i) const { return op_proto_.in_tensors()[i]; }

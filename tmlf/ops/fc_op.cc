@@ -20,3 +20,10 @@ class FCOp : public Operator {
 };
 
 REGISTER_OPERATOR(fc, FCOp);
+
+class FCGradOp : public Operator {
+ public:
+  using Operator::Operator;
+};
+
+REGISTER_OPERATOR(fc_grad, FCGradOp);

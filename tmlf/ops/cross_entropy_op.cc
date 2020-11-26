@@ -20,3 +20,10 @@ class CrossEntropyOp : public Operator {
 };
 
 REGISTER_OPERATOR(cross_entropy, CrossEntropyOp);
+
+class CrossEntropyGradOp : public Operator {
+ public:
+  using Operator::Operator;
+};
+
+REGISTER_OPERATOR(cross_entropy_grad, CrossEntropyGradOp);

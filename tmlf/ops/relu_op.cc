@@ -14,3 +14,10 @@ class ReluOp : public Operator {
 };
 
 REGISTER_OPERATOR(relu, ReluOp);
+
+class ReluGradOp : public Operator {
+ public:
+  using Operator::Operator;
+};
+
+REGISTER_OPERATOR(relu_grad, ReluGradOp);

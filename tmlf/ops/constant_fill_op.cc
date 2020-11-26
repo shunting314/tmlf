@@ -8,7 +8,14 @@ class ConstantFillOp : public Operator {
   explicit ConstantFillOp(const proto::Op& op_proto) : Operator(op_proto) {
   }
   void run() override {
-    auto shape = arg_to_ints(getarg("shape"));
+    std::vector<int64_t> shape;
+    if (op_proto_.in_tensors().size() > 0) {
+      Tensor in_tensor = ws_->get_tensor(op_proto_.in_tensors()[0]);
+      shape.push_back(in_tensor.mat().rows());
+      shape.push_back(in_tensor.mat().cols());
+    } else {
+      shape = arg_to_ints(getarg("shape"));
+    }
     if (shape.size() == 1) {
       shape.push_back(1); // column vector
     }
