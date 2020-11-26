@@ -20,7 +20,7 @@ class XavierFillOp : public Operator {
     assert(shape.size() == 2);
     Tensor out(shape[0], shape[1]);
     auto dim_in = shape[0];
-    auto scale = sqrt(3 / dim_in);
+    auto scale = sqrt(3.0 / dim_in);
     for (int i = 0; i < shape[0]; ++i) {
       for (int j = 0; j < shape[1]; ++j) {
         out.mat()(i, j) = uniform_rand(-scale, scale);
