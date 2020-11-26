@@ -43,6 +43,7 @@ class Operator {
   virtual ~Operator() {}
   virtual void run() = 0;
   std::string getarg(const std::string& name);
+  std::string getarg(const std::string& name, const std::string& def);
  protected:
   proto::Op op_proto_;
   Workspace* ws_;

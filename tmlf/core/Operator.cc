@@ -26,6 +26,15 @@ std::string Operator::getarg(const std::string& name) {
   return "";
 }
 
+std::string Operator::getarg(const std::string& name, const std::string& def) {
+  for (const auto& arg : op_proto_.args()) {
+    if (arg.key() == name) {
+      return arg.value();
+    }
+  }
+  return def;
+}
+
 // TODO only unsigied int so far
 std::vector<int64_t> arg_to_ints(const std::string& str) {
   std::vector<int64_t> ret;
