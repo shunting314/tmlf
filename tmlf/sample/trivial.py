@@ -12,9 +12,10 @@ model.fc("relu", "fc2", in_dim=8, out_dim=1)
 model.sigmoid("fc2", "sigmoid")
 model.cross_entropy(["sigmoid", "labels"], "xent")
 model.averaged_loss("xent", "loss")
-# model.add_backward_ops(loss)
+model.add_backward_ops("loss")
 
 # TODO apply optimizers
+print(model.net.get_proto())
 
 model.do_init()
 model.do_train()

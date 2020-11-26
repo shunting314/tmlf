@@ -1,48 +1,45 @@
 from tmlf.proto import tmlf_pb2
-import six
-
-def to_proto_args(kwargs):
-    kwlist = []
-    for k, v in kwargs.items():
-        arg = tmlf_pb2.Arg()
-        arg.key = k;
-        arg.value = str(v)
-        kwlist.append(arg)
-    return kwlist
+from tmlf.python import gradopmaker
+from tmlf.python.proto_utils import to_op_proto
 
 class Net:
     def __init__(self):
         self.seen_names = set()
         self.op_list = []
+        self.tensor_to_grad_map = None
 
     def next_name(self, name):
         orig_name = name
         seq = 0
         while name in self.seen_names:
-            name = f"{orig_name}_seq"
+            name = f"{orig_name}_{seq}"
             seq += 1
         self.seen_names.add(name)
         return name
 
     def __getattr__(self, name):
         def add_op(in_tensors, out_tensors, **kwargs):
-            self.op_list.append((name, in_tensors, out_tensors, kwargs))
+            self.op_list.append(to_op_proto(name, in_tensors, out_tensors, **kwargs))
         return add_op
 
     def get_proto(self):
         net = tmlf_pb2.Net()
-        for op in self.op_list:
-            name, in_tensors, out_tensors, kwargs = op
-            op_proto = net.ops.add()
-            op_proto.type = name
-            if isinstance(in_tensors, six.string_types):
-                in_tensors = [in_tensors]
-            op_proto.in_tensors.extend(in_tensors)
-            if isinstance(out_tensors, six.string_types):
-                out_tensors = [out_tensors]
-            op_proto.out_tensors.extend(out_tensors)
-            op_proto.args.extend(to_proto_args(kwargs))
+        net.ops.extend(self.op_list)
         return net
+
+    def add_backward_ops(self, loss_tkey):
+        ghelper = gradopmaker.GradOpMaker()
+
+        grad_ops = []
+        tensor_to_grad_map = {}
+        grad_ops.append(ghelper.make_grad_op_for_loss(loss_tkey))
+        for op in self.op_list[::-1]:
+            grad_op, extra_map = ghelper.make_grad_op(op)
+            grad_ops.append(grad_op)
+            tensor_to_grad_map.update(extra_map)
+
+        self.op_list.extend(grad_ops)
+        self.tensor_to_grad_map = tensor_to_grad_map
 
 def run_net(net):
     from tmlf.python import tmlf_pybind
@@ -62,6 +59,9 @@ class Model:
 
     def __getattr__(self, name):
         return getattr(self.net, name)
+
+    def add_backward_ops(self, loss_tkey):
+        self.net.add_backward_ops(loss_tkey)
 
     def do_init(self):
         run_net(self.init_net)
