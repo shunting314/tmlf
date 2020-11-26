@@ -11,7 +11,7 @@ model.relu("fc", "relu")
 model.fc("relu", "fc2", in_dim=8, out_dim=1)
 model.sigmoid("fc2", "sigmoid")
 model.cross_entropy(["sigmoid", "labels"], "xent")
-# loss = model.averaged_loss(xent, "loss")
+model.averaged_loss("xent", "loss")
 # model.add_backward_ops(loss)
 
 # TODO apply optimizers
