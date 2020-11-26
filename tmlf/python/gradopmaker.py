@@ -23,6 +23,8 @@ RULE_LIST = {
     ),
     "averaged_loss": Rule(
         "averaged_loss_grad",
+        ["i0", "go0"],
+        ["gi0"],
     ),
 }
 

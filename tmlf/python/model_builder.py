@@ -27,12 +27,14 @@ class Net:
         net.ops.extend(self.op_list)
         return net
 
-    def add_backward_ops(self, loss_tkey):
+    # unit test may need loss_tkey to be None
+    def add_backward_ops(self, loss_tkey=None):
         ghelper = gradopmaker.GradOpMaker()
 
         grad_ops = []
         tensor_to_grad_map = {}
-        grad_ops.append(ghelper.make_grad_op_for_loss(loss_tkey))
+        if loss_tkey is not None:
+            grad_ops.append(ghelper.make_grad_op_for_loss(loss_tkey))
         for op in self.op_list[::-1]:
             grad_op, extra_map = ghelper.make_grad_op(op)
             grad_ops.append(grad_op)

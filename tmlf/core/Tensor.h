@@ -25,6 +25,9 @@ class Tensor {
   // TODO maybe it's better to not expose MatXf at all
   MatXf& mat() { return *mat_; }
   ArrXf arr() { return (*mat_).array(); }
+  size_t rows() const { return mat_->rows(); }
+  size_t cols() const { return mat_->cols(); }
+  size_t size() const { return rows() * cols(); }
 
   // TODO support row vector as well
   VecXf vec() { assert(mat_->cols() == 1); return Eigen::Map<VecXf>(mat_->data(), mat_->rows() * mat_->cols()); }

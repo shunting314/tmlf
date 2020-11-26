@@ -42,7 +42,8 @@ class Operator {
   }
   virtual ~Operator() {}
   virtual void run() {
-    LOG(FATAL) << "Subclass of Operator should override run()";
+    LOG(FATAL) << "Subclass of Operator should override run(). Proto: "
+        << op_proto_.DebugString();
   }
   std::string getarg(const std::string& name);
   std::string getarg(const std::string& name, const std::string& def);
