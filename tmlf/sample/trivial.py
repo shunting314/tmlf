@@ -1,9 +1,9 @@
-# from tmlf.python import workspace
-# from tmlf.python import net
 from tmlf.python import model_builder
-# import numpy as np
+from tmlf.python import tmlf_pybind
+import numpy as np
 
-# workspace.feed_tensor("features", np.array([[1, 2, 3], [4, 5, 6]]))
+tmlf_pybind.feed_tensor("features", tmlf_pybind.Tensor(
+    np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float32)))
 # workspace.feed_tensor("labels", np.array([0, 1]))
 
 model = model_builder.Model()

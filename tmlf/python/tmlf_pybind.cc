@@ -61,7 +61,7 @@ PYBIND11_MODULE(tmlf_pybind, m) {
         LOG(FATAL) << "Incompatible format";
       }
       if (info.ndim != 2) {
-        LOG(FATAL) << "Incompatible buffer dimension!";
+        LOG(FATAL) << "Incompatible buffer dimension! Got " << info.ndim;
       }
       auto strides = Strides(
         info.strides[0] / sizeof(float),

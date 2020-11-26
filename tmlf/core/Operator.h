@@ -44,6 +44,8 @@ class Operator {
   virtual void run() = 0;
   std::string getarg(const std::string& name);
   std::string getarg(const std::string& name, const std::string& def);
+  const std::string& in(int i) const { return op_proto_.in_tensors()[i]; }
+  const std::string& out(int i) const { return op_proto_.out_tensors()[i]; }
  protected:
   proto::Op op_proto_;
   Workspace* ws_;
