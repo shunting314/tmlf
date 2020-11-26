@@ -19,6 +19,12 @@ REGISTER_OPERATOR(sigmoid, SigmoidOp);
 class SigmoidGradOp : public Operator {
  public:
   using Operator::Operator;
+  void run() override {
+    auto out_ar = ws_->get_tensor(in(0)).arr();
+    auto gout_ar = ws_->get_tensor(in(1)).arr();
+    auto gin_ar = out_ar * (1 - out_ar) * gout_ar;
+    ws_->add_tensor(out(0), Tensor(gin_ar.matrix()));
+  }
 };
 
 REGISTER_OPERATOR(sigmoid_grad, SigmoidGradOp);

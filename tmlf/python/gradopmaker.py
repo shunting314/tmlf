@@ -17,6 +17,8 @@ RULE_LIST = {
     ),
     "sigmoid": Rule(
         "sigmoid_grad",
+        ["o0", "go0"],
+        ["gi0"],
     ),
     "cross_entropy": Rule(
         "cross_entropy_grad",
