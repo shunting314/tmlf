@@ -12,7 +12,9 @@ typedef Eigen::Matrix<float, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> Ma
 
 class Tensor {
  public:
+  using MatType = MatXf;
   explicit Tensor(int64_t w, int64_t h);
+  explicit Tensor(const MatXf& mat) : mat_(std::make_shared<MatXf>(mat)) { }
 
   // TODO maybe it's better to not expose MatXf at all
   MatXf& mat() { return *mat_; }
