@@ -60,6 +60,9 @@ class Model:
         self.init_net.constant_fill([], b, shape=[out_dim])
         self.net.fc([in_tensors, w, b], out_tensors)
 
+    def __getattr__(self, name):
+        return getattr(self.net, name)
+
     def do_init(self):
         run_net(self.init_net)
 

@@ -8,7 +8,7 @@ tmlf_pybind.feed_tensor("features", tmlf_pybind.Tensor(
 
 model = model_builder.Model()
 model.fc("features", "fc", in_dim=3, out_dim=8)
-# relu = model.relu([fc], "relu")
+model.relu("fc", "relu")
 # fc2 = model.fc(relu, "fc2", dim_in=8, dim_out=1)
 # sigmoid = model.sigmoid(fc2, "sigmoid")
 # xent = model.cross_entropy([sigmoid, "labels"], "xent")
