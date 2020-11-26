@@ -12,7 +12,7 @@ cd $ORIG_DIR
 
 LD_FLAGS="-lglog -lprotobuf"
 CFLAGS="-I."
-CSRC="tmlf/proto/tmlf.pb.cc tmlf/core/Net.cc tmlf/core/Operator.cc tmlf/ops/xavier_fill_op.cc tmlf/ops/constant_fill_op.cc"
+CSRC="tmlf/proto/tmlf.pb.cc tmlf/core/Net.cc tmlf/core/Operator.cc tmlf/core/Tensor.cc tmlf/core/Workspace.cc tmlf/ops/xavier_fill_op.cc tmlf/ops/constant_fill_op.cc"
 
 # EXTRA_LD_FLAGS="-Wl,-undefined,dynamic_lookup"
 g++ -O2 -shared -fPIC -std=c++14 $CFLAGS `python3.6 -m pybind11 --includes` tmlf/python/tmlf_pybind.cc $CSRC -o tmlf/python/tmlf_pybind`python3.6-config --extension-suffix` $LD_FLAGS `python3.6-config --ldflags` $EXTRA_LD_FLAGS

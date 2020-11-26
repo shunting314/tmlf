@@ -3,6 +3,7 @@
 #include <memory>
 #include "tmlf/proto/tmlf.pb.h"
 #include <glog/logging.h>
+#include "tmlf/core/Workspace.h"
 
 namespace tmlf {
 
@@ -35,11 +36,16 @@ class OperatorRegisterer {
 
 class Operator {
  public:
-  explicit Operator(const proto::Op& op_proto) : op_proto_(op_proto) { }
+  explicit Operator(const proto::Op& op_proto) : op_proto_(op_proto) {
+    // only support single workspace so far
+    ws_ = Workspace::get_ptr();
+  }
   virtual ~Operator() {}
   virtual void run() = 0;
- private:
+  std::string getarg(const std::string& name);
+ protected:
   proto::Op op_proto_;
+  Workspace* ws_;
 };
 
 std::unique_ptr<Operator> create_operator(const proto::Op& op_proto);
@@ -48,5 +54,8 @@ std::unique_ptr<Operator> create_operator(const proto::Op& op_proto);
   static auto reg ## op_type = OperatorRegisterer(#op_type, [](const proto::Op& op_proto) -> std::unique_ptr<Operator> { \
     return std::make_unique<op_class>(op_proto); \
   })
+
+// arg utils
+std::vector<int64_t> arg_to_ints(const std::string& str);
 
 }
