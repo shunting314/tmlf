@@ -14,6 +14,8 @@ RULE_LIST = {
     ),
     "relu": Rule(
         "relu_grad",
+        ["i0", "go0"],
+        ["gi0"],
     ),
     "sigmoid": Rule(
         "sigmoid_grad",
