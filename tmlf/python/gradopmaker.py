@@ -34,6 +34,8 @@ RULE_LIST = {
     ),
     "label_cross_entropy": Rule(
         "label_cross_entropy_grad",
+        ["i0", "i1", "go0"],
+        ["gi0"],
     ),
     "softmax": Rule(
         "softmax_grad",
