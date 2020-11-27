@@ -39,6 +39,8 @@ RULE_LIST = {
     ),
     "softmax": Rule(
         "softmax_grad",
+        ["o0", "go0",],
+        ["gi0"],
     ),
 
     # ops to skip gradient

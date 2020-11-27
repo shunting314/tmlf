@@ -19,3 +19,20 @@ sm_out_expected = np.array(
         [math.exp(-6) / exp_sum2, math.exp(4) / exp_sum2, math.exp(7) / exp_sum2],
     ], dtype=np.float32)
 np.testing.assert_almost_equal(sm_out_expected, sm_out)
+
+# backward
+net.add_backward_ops()
+sm_out_grad = np.array(
+    [
+        [ 0.2, -0.2, 0.3],
+        [ -0.5, 0.4, 0.7],
+    ], dtype=np.float32,
+)
+workspace.feed_tensor("sm_out_grad", sm_out_grad)
+model_builder.run_net(net)
+sm_in_grad = workspace.fetch_tensor("sm_in_grad")
+
+# calculate the expected grad. Numpy broadcast a vector by row to a matrix
+sm_in_grad_expected = (sm_out_grad.transpose() - (sm_out_grad * sm_out).sum(axis=1)).transpose() * sm_out
+
+np.testing.assert_almost_equal(sm_in_grad_expected, sm_in_grad)
