@@ -37,8 +37,9 @@ class Net:
             grad_ops.append(ghelper.make_grad_op_for_loss(loss_tkey))
         for op in self.op_list[::-1]:
             grad_op, extra_map = ghelper.make_grad_op(op)
-            grad_ops.append(grad_op)
-            tensor_to_grad_map.update(extra_map)
+            if grad_op is not None:
+                grad_ops.append(grad_op)
+                tensor_to_grad_map.update(extra_map)
 
         self.op_list.extend(grad_ops)
         self.tensor_to_grad_map = tensor_to_grad_map

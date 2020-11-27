@@ -1,5 +1,5 @@
 from tmlf.python import model_builder
-from tmlf.python import tmlf_pybind, workspace
+from tmlf.python import tmlf_pybind, workspace, optimizer
 import numpy as np
 
 workspace.feed_tensor("features", np.array([[1, 2, 3], [4, 5, 6]], dtype=np.float32))
@@ -15,19 +15,7 @@ model.averaged_loss("xent", "loss")
 model.add_backward_ops("loss")
 
 print(f"Param to grad map: {model.get_param_to_grad_map()}")
-
-model.init_net.constant_fill(
-    [], "one", shape=[1], value=1.0,
-)
-model.init_net.constant_fill(
-    [], "lr", shape=[1], value=-0.03,
-)
-
-for param, grad in model.get_param_to_grad_map().items():
-    model.weighted_sum(
-        [param, "one", grad, "lr"],
-        [param],
-    )
+optimizer.build_sgd(model)
 
 print(model.net.get_proto())
 

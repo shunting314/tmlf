@@ -32,6 +32,16 @@ RULE_LIST = {
         ["i0", "go0"],
         ["gi0"],
     ),
+    "label_cross_entropy": Rule(
+        "label_cross_entropy_grad",
+    ),
+    "softmax": Rule(
+        "softmax_grad",
+    ),
+
+    # ops to skip gradient
+    "circular_batch": None,
+    "accuracy": None,
 }
 
 def sig_to_tkey(sig, orig_op, tensor_to_grad_map):
@@ -67,6 +77,8 @@ class GradOpMaker:
         if orig_op.type not in RULE_LIST:
             raise RuntimeError(f"No gradient rule defined for {orig_op.type}")
         rule = RULE_LIST[orig_op.type]
+        if rule is None: # skip gradient
+            return None, {}
         tensor_to_grad_map = {}
         in_tensors = []
         out_tensors = []
